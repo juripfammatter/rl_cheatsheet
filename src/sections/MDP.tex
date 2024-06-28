@@ -1,1 +1,63 @@
 \section{Finite Markov Decision Process}
+\subsection{Markov Property}
+The Markov property states that the \textbf{transition probability} $p$ is fully defined by the current state $s$ and the taken action $a$ (no long-term memory)
+\noindent\begin{equation*}
+    p(s',r|s,a)=P\bigl[S_{t+1}=s', R_{t+1}=r|S_t = s, A_t = a\bigr]
+\end{equation*}
+\subsection{Finite Markov Decision Process}
+A finite markov decision Process (MDP) is defined by its state and action sets $\mathcal{A}, \mathcal{S}$ and by the one-step dynamics of the environment:
+\noindent\begin{align*}
+    p(s'|s,a) & = \sum_{r\in \mathcal{R}}p(s',r|s,a)                                                                   \\
+    r(s,a)    & = \mathbb{E}\bigl[R_{t+1}|s,a \bigr] = \sum_{r\in \mathcal{R}} r \sum_{s'\in  \mathcal{S}} p(s',r|s,a) \\
+    r(s,a,s') & = \mathbb{E}\bigl[R_{t+1}|s,a,s' \bigr] = \frac{\sum_{r\in \mathcal{R}} r p(s',r|s,a)}{p(s'|s,a)}
+\end{align*}
+
+\subsection{Bellman Equations}
+\ptitle{Value Function}
+
+\noindent\begin{align}
+    \begin{split}\label{eq:val_func}
+        v_\pi(s) & = \mathbb{E}_\pi\bigl[G_t|S_t = s\bigr]                                                                    \\
+                 & = \sum_{a\in \mathcal{A}} \pi(a|s)\underbrace{\mathbb{E}_\pi\bigl[G_t|S_t = s, A_t = a\bigr]}_{q_\pi(s,a)}
+    \end{split} \\
+    \begin{split}\nonumber
+        ~\eqref{eq:act_val_func},\eqref{eq:val_func} \; & =\sum_{a\in \mathcal{A}} \pi(a|s)\sum_{s'\in \mathcal{S}}\sum_{r\in \mathcal{R}} p(s',r|s,a)\Bigl(r + \gamma v_\pi(s') \Bigr)
+    \end{split}
+\end{align}
+
+\ptitle{Action-Value Function}
+\noindent\begin{align}
+    \begin{split}\label{eq:act_val_func}
+        q_\pi(s,a) & = \mathbb{E}\bigl[G_t|S_t = s, A_t = a\bigr]                                                                                                                 \\
+                   & = \sum_{s'\in \mathcal{S}}\sum_{r\in \mathcal{R}} p(s',r|s,a)\Bigl(r + \gamma \underbrace{\mathbb{E}_\pi\bigl[G_{t+1}|S_{t+1} = s'\bigr]}_{v_\pi(s')} \Bigr)
+    \end{split} \\
+    \begin{split}\nonumber
+        ~\eqref{eq:val_func},\eqref{eq:act_val_func} \; & =\sum_{s'\in \mathcal{S}}\sum_{r\in \mathcal{R}} p(s',r|s,a)\Bigl(r + \gamma \sum_{a'\in \mathcal{A}} \pi(a'|s')q_\pi(s',a') \Bigr)
+    \end{split}
+\end{align}
+
+\subsubsection{Optimal (Action-) Value Functions}
+An optimal policy $\pi_*$ satisfies
+\noindent\begin{align*}
+    v_{\pi_*}(s):=v_*(s)     & \geq v_\pi(s) \quad\forall s\in \mathcal{S}, \pi   \\
+    q_{\pi_*}(s,a):=q_*(s,a) & \geq q_\pi(s,a) \quad\forall s\in \mathcal{S}, \pi
+\end{align*}
+
+\ptitle{Bellman Equation for Value}
+\noindent\begin{align*}
+    v_*(s) & = \max_\pi v_\pi(s)                                                                                                   \\
+           & =\max_{a\in \mathcal{A}(s)} q_*(s,a)                                                                                  \\
+           & =\max_{a\in \mathcal{A}(s)}\sum_{s'\in \mathcal{S}}\sum_{r\in \mathcal{R}} p(s',r|s,a)\Bigl(r + \gamma v_*(s') \Bigr)
+\end{align*}
+
+\ptitle{Bellman Equation for Action-Value}
+\noindent\begin{align*}
+    q_*(s,a) & = \max_\pi q_\pi(s,a)                                                                                                          \\
+             & =\sum_{s'\in \mathcal{S}}\sum_{r\in \mathcal{R}} p(s',r|s,a)\Bigl(r + \gamma \underbrace{\max_{a'}q_*(s',a')}_{v_*(s')} \Bigr)
+\end{align*}
+
+\textbf{Remarks}
+\begin{itemize}
+    \item Any policy that is greedy wrt.\ to $v_*$ is an optimal policy $\pi_*$.
+    \item $q_*$ only needs to find best action (no search needed)
+\end{itemize}

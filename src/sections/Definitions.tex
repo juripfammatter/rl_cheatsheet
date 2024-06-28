@@ -1,2 +1,68 @@
 \section{Definitions}
-\subsection{On- vs. Off-Policy}
+\begin{center}
+    \begin{tikzcd}
+        \text{Agent} \arrow[rr, bend left, "A_t"]%Chktex 18
+        && \text{Environment} \arrow[dl, rightharpoondown, bend left, "R_{t+1}"']\arrow[dl, rightharpoonup, bend left, shift left=0.2ex, "S_{t+1}"]\\%Chktex 18
+        &\vdots \arrow[ul, rightharpoondown, bend left, "R_{t}"']\arrow[ul, rightharpoonup, bend left, shift left=0.2ex, "S_{t}"]%Chktex 18
+    \end{tikzcd}
+\end{center}
+
+\subsection{Returns and Rewards}
+In reinforcement learning, goals are defined by using \textbf{rewards}. Rewards $R_t$ at time $t$ are `computed' by the environment.
+
+The \textbf{return} $G_t$ is the discounted sum of prospective rewards for all future steps.
+\noindent\begin{equation*}
+    G_t = \sum_{k=t+1}^{T} \gamma^{k-t-1} R_{k},\quad \begin{cases}
+        \mathrm{Episodic:}  & \text{Ends at }T \\
+        \mathrm{Continous:} & T=\infty
+    \end{cases}
+\end{equation*}
+
+\subsection{Policy}
+A policy $\pi$ is a law on how the actor chooses its actions.
+
+\ptitle{Deterministic Policy}
+\noindent\begin{equation*}
+    \pi(s):=\quad \text{action taken in state }s
+\end{equation*}
+
+\ptitle{Probabalistic Policy}
+\noindent\begin{equation*}
+    \pi(a|s):=\quad \text{prob.\ of taking action }a \text{in state }a
+\end{equation*}
+
+\subsubsection{On- vs. Off-Policy}
+A RL actor samples data from the environment through the \textbf{behaviour policy} $b(a|s)$ and improves/evaluates its \textbf{target policy} $\pi(a|s)$.
+
+\newpar{}
+\ptitle{On-Policy}
+\noindent\begin{equation*}
+    b(a|s) = \pi(a|s)
+\end{equation*}
+
+\newpar{}
+\ptitle{Off-Policy}
+\noindent\begin{equation*}
+    b(a|s) \neq \pi(a|s)
+\end{equation*}
+
+\subsection{Model-Based vs. -Free}
+A model is anything that the actor can use to predict the environment's response to its actions (eg.\ $p(s',r|s,a)$).
+
+\newpar{}
+\ptitle{Model-Based Methods}
+
+Model-based methods use a model to plan actions.
+
+\begin{itemize}
+    \item Dynamic programming (DP)
+\end{itemize}
+
+\newpar{}
+\ptitle{Model-Free Methods}
+
+Model-free methods learn action-return associations.
+
+\begin{itemize}
+    \item Monte Carlo Methods (MC)
+\end{itemize}
