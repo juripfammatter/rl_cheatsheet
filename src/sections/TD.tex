@@ -52,7 +52,7 @@ Due to the error reduction property, both on- and off-line TD prediction converg
     \max_s \left|\mathbb{E}_\pi\Bigl[G_t^h | S_t=s\Bigr] - v_\pi(s)\right| \leq \gamma^n \max_s \Bigl|v(s) - v_\pi(s)\Bigr|
 \end{equation*}
 
-\subsubsection{TD(0) Algortihm}
+\subsubsection{TD(0) Algortihm}%Chktex 36
 \begin{algorithmic}
     \Require{policy $\pi$ to be evaluated}
     \State{Initialize $V(s)$ arbitrarily}
@@ -68,7 +68,7 @@ Due to the error reduction property, both on- and off-line TD prediction converg
 \end{algorithmic}
 
 \subsection{SARSA:\ On-policy control}
-Sarsa can be seen as an \textit{on-policy TD control} method which updates the action-value estimate $Q$ at each timestep $t$:
+Sarsa ($s,a,r,s',a'$) can be seen as an \textit{on-policy TD control} method which updates the action-value estimate $Q$ at each timestep $t$:
 \noindent\begin{equation*}
     Q(S_t, A_t) \gets (1-\alpha)Q(S_t, A_t) + \alpha \Bigl[\underbrace{R_{t+1} + \gamma Q(S_{t+1}, A_{t+1})}_{\textsf{target}} \Bigr]
 \end{equation*}
@@ -91,7 +91,7 @@ Because the action-values are updated based on an estimate of the action value $
 \end{algorithmic}
 
 \subsubsection{Expected SARSA}
-Expected sarsa averages over the policy distribution:
+Expected SARSA averages over the policy distribution:
 \noindent\begin{align*}
     Q(S_t, A_t) \gets & (1-\alpha)Q(S_t, A_t) + \cdots                                                                                                                       \\
                       & \cdots + \alpha \Bigl[R_{t+1} + \gamma \underbrace{\sum_{a} Q(S_{t+1}, a) \pi(a| S_{t+1})}_{\mathbb{E}_\pi \left[ Q(S_{t+1}, A_{t+1})\right]} \Bigr]
