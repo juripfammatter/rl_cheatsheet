@@ -12,24 +12,38 @@
         \node[text width=2.5cm]{Reinforcement learning}
         child { node {Model based}
                 child [model based]{ node {MDP}
-                        child[deep RL] { node {Actor critic}}
+                        child[deep RL] {
+                                node {Actor critic}
+                            }
                     }
                 child [concept color=gray!50]{
                         node {Nonlinear Dynamics}
-                        child [deep RL] { node {Deep MPC}}
-                        child [concept color=gray!50]{ node {Optimal control}}
+                        child [deep RL] {
+                                node {Deep MPC}
+                            }
+                        child [concept color=gray!50]{
+                                node {Optimal control}
+                            }
                     }
                 child [model based]{
                         node {DP}
+                        child {
+                                node {Policy iteration}
+                            }
+                        child {
+                                node {Value iteration}
+                            }
                     }
             }
         child { node {Model free}
                 child { node {Gradient free}
-                        child { node {Off-policy}
+                        child {
+                                node {Off-policy}
                                 child { node {Q-learning}}
                                 child[deep RL] { node {DQN}}
                             }
-                        child { node {On-policy}
+                        child {
+                                node {On-policy}
                                 child { node {SARSA}}
                                 child { node {TD}}
                                 child { node {$n$-step TD}}
@@ -37,8 +51,12 @@
                             }
                     }
                 child { node {Gradient based}
-                        child { node {Policy gradient optimization}}
-                        child [deep RL]{ node {Deep policy networks}}
+                        child {
+                                node {Policy gradient optimization}
+                            }
+                        child [deep RL]{
+                                node {Deep policy networks}
+                            }
                     }
             }
         ;

@@ -1,1 +1,119 @@
 \section{Temporal-Difference-Learning}
+Temporal difference methods can learn directly from experience without a model.
+TD methods update estimates based on other learned estimates (\textbf{bootstraping}).
+
+\subsection[TD Prediction]{TD($\lambda$) Prediction} %Chktex 36
+TD methods update the value estimates $V_t$ at timestep $t$ either during sampling (\textit{on-line}) or at the end of an episode (\textit{off-line}).
+
+\newpar{}
+\ptitle{On-line}
+\noindent\begin{equation*}
+    V_{t+1}(s) = V_t(s)+\Delta_t(s),\quad \forall s\in \mathcal{S}
+\end{equation*}
+
+\newpar{}
+\ptitle{Off-line}
+\noindent\begin{align*}
+    V_{t+1}(s) & = V_t(s),                                & \forall t < R \\
+    V_T(s)     & = V_{T-1} + \sum_{t=0}^{T-1} \Delta_t(s)
+\end{align*}
+
+In both cases the update is given by the weighted difference between the target and the previously estimated value:
+\noindent\begin{equation*}
+    \Delta_t(S_t) = \alpha \Bigl[\underbrace{G_t^{t+n}(V_t(S_{t+n}))}_{\textsf{target}} -V_t(S_t) \Bigr]
+\end{equation*}
+
+\subsubsection{Targets}
+Depending on the horizon $h=t+n$, the target will include $n$ future rewards into the update of the estimated value $V$:
+\noindent\begin{equation*}
+    G_t^{t+n}(c) = R_{t+1} + \gamma R_{t+2} + \cdots + \gamma^{n-1}R_{h} + \gamma^n c
+\end{equation*}
+
+\ptitle{(1-step) TD(0)} %Chktex 36
+\noindent\begin{align*}
+    G_t^{t+n}(V_t(S_{t+n})) = R_{t+1} +  \gamma V_t(S_{t+1})
+\end{align*}
+
+\newpar{}
+\ptitle{$n$-step TD}
+\noindent\begin{align*}
+    G_t^{t+n}(V_t(S_{t+n})) = R_{t+1} + \cdots + \gamma^{n-1}R_{t+n} + \gamma^n V_t(S_{t+n})
+\end{align*}
+
+\newpar{}
+\ptitle{$\infty$-step TD (Monte Carlo)}
+\noindent\begin{equation*}
+    G_t = R_{t+1}+\gamma R_{t+2} + \cdots + \gamma^{T-t-1}R_T
+\end{equation*}
+
+\subsubsection{Error Reduction Property}
+Due to the error reduction property, both on- and off-line TD prediction converge to the correct predictions:
+\noindent\begin{equation*}
+    \max_s \left|\mathbb{E}_\pi\Bigl[G_t^h | S_t=s\Bigr] - v_\pi(s)\right| \leq \gamma^n \max_s \Bigl|v(s) - v_\pi(s)\Bigr|
+\end{equation*}
+
+\subsubsection{TD(0) Algortihm}
+\begin{algorithmic}
+    \Require{policy $\pi$ to be evaluated}
+    \State{Initialize $V(s)$ arbitrarily}
+    \For{each episode}
+    \State{Initialize $S$}
+    \While{$S$ is not terminal}
+    \State{$A\gets \max_a\pi(a|S=s)$}
+    \State{take action; observe reward $R$ and next state $S'$}
+    \State{$V(S)\gets V(S) + \alpha\left[ R +\gamma V(S') - V(S) \right]$}
+    \State{$S\gets S'$}
+    \EndWhile{}
+    \EndFor{}
+\end{algorithmic}
+
+\subsection{SARSA:\ On-policy control}
+Sarsa can be seen as an \textit{on-policy TD control} method which updates the action-value estimate $Q$ at each timestep $t$:
+\noindent\begin{equation*}
+    Q(S_t, A_t) \gets (1-\alpha)Q(S_t, A_t) + \alpha \Bigl[\underbrace{R_{t+1} + \gamma Q(S_{t+1}, A_{t+1})}_{\textsf{target}} \Bigr]
+\end{equation*}
+
+Because the action-values are updated based on an estimate of the action value $q_\pi(s,a)$ under policy $\pi$, SARSA is considered \textbf{on-policy}
+
+\subsubsection{SARSA Algortihm}
+\begin{algorithmic}
+    \State{Initialize $Q(s,a)$ arbitrarily ($Q$(terminal state, $\cdot$) = 0)} %Chktex 36
+    \For{each episode}
+    \State{Initialize $S$}
+    \State{Choose $A$ from $S$ using policy derived from $Q$\newline (e.g.\ $\epsilon$-greedy)}
+    \While{$S$ is not terminal}
+    \State{Take action $A$, observe $R,S'$}
+    \State{Choose $A'$ from $S'$ using policy derived from $Q$}
+    \State{$Q(S,A)\gets (1-\alpha)Q(S,A) + \alpha\left[ R +\gamma Q(S',A')\right]$}
+    \State{$S\gets S', A\gets A'$}
+    \EndWhile{}
+    \EndFor{}
+\end{algorithmic}
+
+\subsubsection{Expected SARSA}
+Expected sarsa averages over the policy distribution:
+\noindent\begin{align*}
+    Q(S_t, A_t) \gets & (1-\alpha)Q(S_t, A_t) + \cdots                                                                                                                       \\
+                      & \cdots + \alpha \Bigl[R_{t+1} + \gamma \underbrace{\sum_{a} Q(S_{t+1}, a) \pi(a| S_{t+1})}_{\mathbb{E}_\pi \left[ Q(S_{t+1}, A_{t+1})\right]} \Bigr]
+\end{align*}
+
+\subsection{Q-learning: Off-policy TD Control}
+In contrast to SARSA, Q-learning updates the estimated action-value based on \textit{best available} action $A$ from state $S_t$ at timestep $t$:
+\noindent\begin{equation*}
+    Q(S_t, A_t) \gets (1-\alpha)Q(S_t, A_t) + \alpha \Bigl[\underbrace{R_{t+1} + \gamma \max_a Q(S_{t+1}, a)}_{\textsf{target}} \Bigr]
+\end{equation*}
+
+Since Q-learning approximates the optimal action-value function $q_*(s,a)$ independent of the policy being followed, Q-learning is considered \textbf{off-policy}.
+\subsubsection{Q-learning Algortihm}
+\begin{algorithmic}
+    \State{Initialize $Q(s,a)$ arbitrarily ($Q$(terminal state, $\cdot$) = 0)} %Chktex 36
+    \For{each episode}
+    \State{Initialize $S$}
+    \While{$S$ is not terminal}
+    \State{Choose $A$ from $S$ using policy derived from $Q$\newline (e.g.\ $\epsilon$-greedy)}
+    \State{Take action $A$, observe $R,S'$}
+    \State{$Q(S,A)\gets (1-\alpha)Q(S,A) + \alpha\left[ R +\gamma \max_a Q(S',a)\right]$}
+    \State{$S\gets S'$}
+    \EndWhile{}
+    \EndFor{}
+\end{algorithmic}
