@@ -7,6 +7,9 @@
 % load the template headers
 \input{\templatePath/summary_headers.tex} % ChkTex 27
 \usepackage{tikz-cd}
+\usetikzlibrary{mindmap}
+\usepackage[dvipsnames]{xcolor}
+
 \begin{document}
 \begin{multicols*}{3}
 
@@ -22,4 +25,6 @@
 
     \input{sections/References.tex}
 \end{multicols*}
+
+\input{sections/Overview.tex}
 \end{document}
